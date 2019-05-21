@@ -59,7 +59,6 @@ public class GatewayServerHandler extends SimpleChannelInboundHandler<Object> {
             if (msg instanceof LastHttpContent) {
                 LastHttpContent trace = (LastHttpContent) msg;
                 System.out.println("[NETTY-GATEWAY] REQUEST : " + buffer.toString());
-
                 url = matchUrl();
                 System.out.println("[NETTY-GATEWAY] URL : " + url);
 
@@ -74,7 +73,7 @@ public class GatewayServerHandler extends SimpleChannelInboundHandler<Object> {
                     @Override
                     public void operationComplete(Future<StringBuilder> future) throws Exception {
                         if (future.isSuccess()) {
-                            respone = ((StringBuilder) future.get(GATEWAY_OPTION_HTTP_POST, TimeUnit.MILLISECONDS));
+                            respone = future.get(GATEWAY_OPTION_HTTP_POST, TimeUnit.MILLISECONDS);
                         } else {
                             respone = new StringBuilder(((Signal) future.cause()).name());
                         }
@@ -130,18 +129,14 @@ public class GatewayServerHandler extends SimpleChannelInboundHandler<Object> {
     private void writeResponse(StringBuilder respone, HttpObject current, ChannelHandlerContext ctx) {
         if (respone != null) {
             boolean keepAlive = HttpUtil.isKeepAlive(request);
-
             FullHttpResponse response = new DefaultFullHttpResponse(
                     HTTP_1_1, current == null ? OK : current.decoderResult().isSuccess() ? OK : BAD_REQUEST,
                     Unpooled.copiedBuffer(respone.toString(), GATEWAY_OPTION_CHARSET));
-
             response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=GBK");
-
             if (keepAlive) {
                 response.headers().setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
                 response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
             }
-
             ctx.write(response);
         }
     }

@@ -89,7 +89,6 @@ public class RoutingLoader implements BeanDefinitionRegistryPostProcessor {
                     beanDefinition.setBeanClass(GatewayAttribute.class);
                     beanDefinition.setPropertyValues(mpv);
                     registry.registerBeanDefinition(serverPath, beanDefinition);
-
                     KEY_GATEWAYS.add(serverPath);
                 }
             }
