@@ -30,11 +30,7 @@ import java.util.*;
 import static com.newlandframework.gateway.commons.GatewayOptions.*;
 
 /**
- * @author tangjie<https://github.com/tang-jie>
- * @filename:RoutingLoader.java
- * @description:RoutingLoader功能模块
- * @blogs http://www.cnblogs.com/jietang/
- * @since 2018/4/18
+ * 通过实现spring框架的BeanDefinitionRegistryPostProcessor接口，来实现配置文件的自动加载注入
  */
 public class RoutingLoader implements BeanDefinitionRegistryPostProcessor {
     public static final List<RouteAttribute> ROUTERS = new ArrayList<RouteAttribute>();
@@ -69,7 +65,6 @@ public class RoutingLoader implements BeanDefinitionRegistryPostProcessor {
         Properties p = new Properties();
         try {
             p.load(resource.getInputStream());
-
             String key = null;
             String keyPrefix = null;
             String defaultAddr = null;

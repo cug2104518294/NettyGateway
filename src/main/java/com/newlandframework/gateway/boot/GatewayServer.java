@@ -36,13 +36,6 @@ import java.nio.channels.spi.SelectorProvider;
 
 import static com.newlandframework.gateway.commons.GatewayOptions.GATEWAY_OPTION_PARALLEL;
 
-/**
- * @author tangjie<https://github.com/tang-jie>
- * @filename:GatewayServer.java
- * @description:GatewayServer功能模块
- * @blogs http://www.cnblogs.com/jietang/
- * @since 2018/4/18
- */
 public class GatewayServer {
     public static int PORT = 0;
     private static final JvmInfo JVM_INFO = new JvmInfo();

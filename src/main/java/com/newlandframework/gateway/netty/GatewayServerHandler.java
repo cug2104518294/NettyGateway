@@ -1,18 +1,3 @@
-/**
- * Copyright (C) 2018 Newland Group Holding Limited
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.newlandframework.gateway.netty;
 
 import com.newlandframework.gateway.commons.GatewayAttribute;
@@ -36,18 +21,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static com.newlandframework.gateway.commons.GatewayOptions.*;
-import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
-import static io.netty.handler.codec.http.HttpResponseStatus.CONTINUE;
-import static io.netty.handler.codec.http.HttpResponseStatus.OK;
+import static io.netty.handler.codec.http.HttpResponseStatus.*;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
-/**
- * @author tangjie<https://github.com/tang-jie>
- * @filename:GatewayServerHandler.java
- * @description:GatewayServerHandler功能模块
- * @blogs http://www.cnblogs.com/jietang/
- * @since 2018/4/18
- */
 public class GatewayServerHandler extends SimpleChannelInboundHandler<Object> {
     private HttpRequest request;
     private StringBuilder buffer = new StringBuilder();
@@ -59,6 +35,7 @@ public class GatewayServerHandler extends SimpleChannelInboundHandler<Object> {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
+        System.out.println("channelReadComplete");
         ctx.flush();
     }
 
@@ -66,11 +43,9 @@ public class GatewayServerHandler extends SimpleChannelInboundHandler<Object> {
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) {
         if (msg instanceof HttpRequest) {
             HttpRequest request = this.request = (HttpRequest) msg;
-
             if (HttpUtil.is100ContinueExpected(request)) {
                 notify100Continue(ctx);
             }
-
             buffer.setLength(0);
             uri = request.uri().substring(1);
         }
@@ -81,10 +56,8 @@ public class GatewayServerHandler extends SimpleChannelInboundHandler<Object> {
             if (content.isReadable()) {
                 buffer.append(content.toString(GATEWAY_OPTION_CHARSET));
             }
-
             if (msg instanceof LastHttpContent) {
                 LastHttpContent trace = (LastHttpContent) msg;
-
                 System.out.println("[NETTY-GATEWAY] REQUEST : " + buffer.toString());
 
                 url = matchUrl();
@@ -134,7 +107,9 @@ public class GatewayServerHandler extends SimpleChannelInboundHandler<Object> {
                         String[] keys = StringUtils.delimitedListToStringArray(route.getKeyWord(), GATEWAY_OPTION_KEY_WORD_SPLIT);
                         boolean match = true;
                         for (String key : keys) {
-                            if (key.isEmpty()) continue;
+                            if (key.isEmpty()) {
+                                continue;
+                            }
                             if (buffer.toString().indexOf(key.trim()) == -1) {
                                 match = false;
                                 break;
