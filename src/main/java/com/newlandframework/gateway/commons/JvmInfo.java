@@ -1,6 +1,7 @@
 package com.newlandframework.gateway.commons;
 
 public class JvmInfo {
+
     private static String getSystemProperty(String name, boolean quiet) {
         try {
             return System.getProperty(name);
